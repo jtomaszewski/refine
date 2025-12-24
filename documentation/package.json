@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 docusaurus build",
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 DISABLE_DOCGEN=true DISABLE_VERSIONING=true DISABLE_EXAMPLES=true DISABLE_CHECKLISTS=true docusaurus build",
     "build:plugins": "sucrase ./plugins -d ./plugins --transforms typescript,imports && npx prettier --write ./plugins",
     "clear": "docusaurus clear",
     "deploy": "docusaurus deploy",
@@ -40,6 +40,7 @@
     "@docusaurus/theme-classic": "2.4.0",
     "@docusaurus/theme-common": "2.4.0",
     "@docusaurus/theme-search-algolia": "2.4.0",
+    "@docusaurus/types": "2",
     "@docusaurus/utils-common": "2.4.0",
     "@floating-ui/react": "^0.26.9",
     "@headlessui/react": "^1.7.15",
