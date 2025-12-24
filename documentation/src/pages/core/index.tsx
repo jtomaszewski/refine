@@ -2,20 +2,20 @@ import Head from "@docusaurus/Head";
 import clsx from "clsx";
 import React from "react";
 
-import { CommonLayout } from "../refine-theme/common-layout";
-import { LandingFooter } from "../refine-theme/landing-footer";
-import { LandingCommunity } from "../refine-theme/landing-community";
-import { LandingEnterpriseDevelopers } from "../refine-theme/landing-enterprise-developers";
-import { LandingTrustedByDevelopers } from "../refine-theme/landing-trusted-by-developers";
-import { LandingPackages } from "../refine-theme/landing-packages";
-import { LandingAlreadyInvented } from "../refine-theme/landing-already-invented";
-import { LandingPureReactCode } from "../refine-theme/landing-pure-react-code";
-import { LandingSweetSpot } from "../refine-theme/landing-sweet-spot";
-import { LandingHeroSection } from "../refine-theme/landing-hero-section";
-import { LandingTryItSection } from "../refine-theme/landing-try-it-section";
-import { CommonHeader } from "../refine-theme/common-header";
-import { LandingTestimonial } from "../refine-theme/landing-testimonial";
-import { LandingAiHeroSection } from "../refine-theme/landing-ai-hero-section";
+import { CommonHeader } from "../../refine-theme/common-header";
+import { CommonLayout } from "../../refine-theme/common-layout";
+import { LandingAiHeroSection } from "../../refine-theme/landing-ai-hero-section";
+import { LandingAlreadyInvented } from "../../refine-theme/landing-already-invented";
+import { LandingCommunity } from "../../refine-theme/landing-community";
+import { LandingEnterpriseDevelopers } from "../../refine-theme/landing-enterprise-developers";
+import { LandingFooter } from "../../refine-theme/landing-footer";
+import { LandingHeroSection } from "../../refine-theme/landing-hero-section";
+import { LandingPackages } from "../../refine-theme/landing-packages";
+import { LandingPureReactCode } from "../../refine-theme/landing-pure-react-code";
+import { LandingSweetSpot } from "../../refine-theme/landing-sweet-spot";
+import { LandingTestimonial } from "../../refine-theme/landing-testimonial";
+import { LandingTrustedByDevelopers } from "../../refine-theme/landing-trusted-by-developers";
+import { LandingTryItSection } from "../../refine-theme/landing-try-it-section";
 
 function Home() {
   const title = "Refine | Open-source Retool for Enterprise";
