@@ -12,11 +12,11 @@ export const menuItems = [
     items: [
       {
         label: "Getting Started",
-        href: "/docs/getting-started/quickstart",
+        href: "/core/docs/getting-started/quickstart",
       },
       {
         label: "Tutorials",
-        href: "/tutorial/essentials/intro",
+        href: "/core/tutorial/essentials/intro",
       },
       {
         label: "Blog",
@@ -24,11 +24,11 @@ export const menuItems = [
       },
       {
         label: "Templates",
-        href: "/templates",
+        href: "/core/templates",
       },
       {
         label: "Integrations",
-        href: "/integrations",
+        href: "/core/integrations",
       },
       {
         label: "Awesome Refine",
@@ -46,7 +46,7 @@ export const menuItems = [
       },
       {
         label: "Enterprise",
-        href: "/enterprise",
+        href: "/core/enterprise",
       },
     ],
   },
@@ -55,11 +55,11 @@ export const menuItems = [
     items: [
       {
         label: "Contributing",
-        href: "/docs/guides-concepts/contributing/",
+        href: "/core/docs/guides-concepts/contributing/",
       },
       {
         label: "RefineWeeks",
-        href: "/week-of-refine",
+        href: "/core/week-of-refine",
       },
       {
         label: "Hackathons",
@@ -72,7 +72,7 @@ export const menuItems = [
     items: [
       {
         label: "About",
-        href: "/about",
+        href: "/core/about",
       },
       {
         label: "Contact Us",
@@ -89,7 +89,7 @@ export const secondaryMenuItems = [
   // },
   {
     label: "Privacy Policy",
-    href: "/privacy-policy",
+    href: "/core/privacy-policy",
   },
   {
     label: "License",

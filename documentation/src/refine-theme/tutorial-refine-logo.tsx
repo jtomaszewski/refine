@@ -43,7 +43,7 @@ export const TutorialRefineLogo = ({ className }: Props) => {
           "bg-gray-300 dark:bg-gray-600",
         )}
       />
-      <Link to="/tutorial" className={clsx("no-underline")}>
+      <Link to="/core/tutorial" className={clsx("no-underline")}>
         <span
           className={clsx(
             "text-gray-1000 dark:text-gray-0",

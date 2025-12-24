@@ -149,7 +149,7 @@ export const LandingEnterpriseDevelopers: FC<Props> = ({ className }) => {
         })}
       </div>
 
-      <LandingSectionCtaButtonAlt to="/enterprise">
+      <LandingSectionCtaButtonAlt to="/core/enterprise">
         Check out Enterprise Edition
       </LandingSectionCtaButtonAlt>
     </div>

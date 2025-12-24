@@ -1,11 +1,11 @@
-import React from "react";
 import clsx from "clsx";
-import { LandingHeroGithubStars } from "./landing-hero-github-stars";
+import React from "react";
 import { LandingStartActionIcon } from "./icons/landing-start-action";
+import { LandingHeroGithubStars } from "./landing-hero-github-stars";
 
-import { LandingHeroAnimation } from "./landing-hero-animation";
-import { LandingCopyCommandButton } from "./landing-copy-command-button";
 import Link from "@docusaurus/Link";
+import { LandingCopyCommandButton } from "./landing-copy-command-button";
+import { LandingHeroAnimation } from "./landing-hero-animation";
 import { LandingHeroShowcaseSection } from "./landing-hero-showcase-section";
 
 export const LandingHeroSection = ({ className }: { className?: string }) => {
@@ -83,7 +83,7 @@ export const LandingHeroSection = ({ className }: { className?: string }) => {
             )}
           >
             <Link
-              to="/docs"
+              to="/core/docs"
               className={clsx(
                 "self-start",
                 "rounded-3xl",

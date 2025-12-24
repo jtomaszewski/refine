@@ -11,7 +11,7 @@ module.exports = {
         "getting-started/quickstart",
         {
           type: "link",
-          href: "/tutorial/essentials/intro",
+          href: "/core/tutorial/essentials/intro",
           label: "Tutorial",
         },
         {
@@ -24,24 +24,21 @@ module.exports = {
         },
         {
           type: "link",
-          href: "https://refine.dev/templates",
+          href: "/core/templates",
           label: "Templates",
-          customProps: {
-            external: true,
-          },
         },
       ],
     },
     // Announcement
     {
       type: "link",
-      href: "/docs/migration-guide/4x-to-5x/",
+      href: "/core/docs/migration-guide/4x-to-5x/",
       label: "Refine v5 is here! 🎉",
       className: "enterprise-badge",
     },
     {
       type: "link",
-      href: "/docs/ui-integrations/shadcn/introduction/",
+      href: "/core/docs/ui-integrations/shadcn/introduction/",
       label: "shadcn/ui Integration 🚀",
       className: "shadcn-badge",
     },

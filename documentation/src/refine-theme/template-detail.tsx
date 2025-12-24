@@ -1,3 +1,9 @@
+import Link from "@docusaurus/Link";
+import * as Icons from "@site/src/assets/integration-icons";
+import { CommonHeader } from "@site/src/refine-theme/common-header";
+import { CommonLayout } from "@site/src/refine-theme/common-layout";
+import { LandingFooter } from "@site/src/refine-theme/landing-footer";
+import clsx from "clsx";
 import React, {
   Fragment,
   useState,
@@ -5,23 +11,17 @@ import React, {
   type PropsWithChildren,
   type SVGProps,
 } from "react";
-import clsx from "clsx";
-import Link from "@docusaurus/Link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
-import { CommonLayout } from "@site/src/refine-theme/common-layout";
-import { CommonHeader } from "@site/src/refine-theme/common-header";
-import { LandingFooter } from "@site/src/refine-theme/landing-footer";
-import { EnterpriseTemplateContactUsModal } from "./enterprise-template-contact-us-modal";
-import { CommonCircleChevronLeft } from "./common-circle-chevron-left";
-import { ShareIcon } from "./icons/share";
-import * as Icons from "@site/src/assets/integration-icons";
-import { CommonRunLocalPrompt } from "./common-run-local-prompt";
-import { GithubIcon } from "./icons/github";
-import { TutorialIcon } from "./icons/tutorial";
-import { LockedIcon } from "./icons/locked";
 import { TemplateEdition } from "../types/integrations";
+import { CommonCircleChevronLeft } from "./common-circle-chevron-left";
+import { CommonRunLocalPrompt } from "./common-run-local-prompt";
+import { EnterpriseTemplateContactUsModal } from "./enterprise-template-contact-us-modal";
+import { GithubIcon } from "./icons/github";
+import { LockedIcon } from "./icons/locked";
+import { ShareIcon } from "./icons/share";
+import { TutorialIcon } from "./icons/tutorial";
 
 type Props = {
   data: {
@@ -60,7 +60,7 @@ export const TemplatesDetail: FC<Props> = ({ data }) => {
         >
           <div>
             <Link
-              to="/templates"
+              to="/core/templates"
               className={clsx(
                 "text-base",
                 "font-semibold",
