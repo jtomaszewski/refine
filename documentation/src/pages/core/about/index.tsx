@@ -1,22 +1,22 @@
 import Head from "@docusaurus/Head";
-import { FooterRedditIcon as RedditIcon } from "@site/src/refine-theme/icons/footer-reddit";
+import Link from "@docusaurus/Link";
+import { useColorMode } from "@docusaurus/theme-common";
 import { BlogFooter } from "@site/src/refine-theme/blog-footer";
 import { CommonHeader } from "@site/src/refine-theme/common-header";
 import { CommonLayout } from "@site/src/refine-theme/common-layout";
+import { CommonThemedImage } from "@site/src/refine-theme/common-themed-image";
 import { Istanbul500Icon } from "@site/src/refine-theme/icons/500";
+import { FooterRedditIcon as RedditIcon } from "@site/src/refine-theme/icons/footer-reddit";
 import { GithubIcon } from "@site/src/refine-theme/icons/github";
 import { MailIcon } from "@site/src/refine-theme/icons/mail";
 import { MarkerIcon } from "@site/src/refine-theme/icons/marker";
 import { DiscordIcon, XIcon } from "@site/src/refine-theme/icons/popover";
-import { YCombinatorCircleIcon } from "@site/src/refine-theme/icons/ycombinator-circle";
 import { SenovoIcon } from "@site/src/refine-theme/icons/senovo";
-import Link from "@docusaurus/Link";
+import { YCombinatorCircleIcon } from "@site/src/refine-theme/icons/ycombinator-circle";
 import clsx from "clsx";
 import React from "react";
-import { backedBy } from "../../assets/backed-by";
-import { team } from "../../assets/team";
-import { useColorMode } from "@docusaurus/theme-common";
-import { CommonThemedImage } from "@site/src/refine-theme/common-themed-image";
+import { backedBy } from "../../../assets/backed-by";
+import { team } from "../../../assets/team";
 
 const About: React.FC = () => {
   return (

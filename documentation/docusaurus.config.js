@@ -327,15 +327,15 @@ const siteConfig = {
           items: [
             {
               label: "Examples",
-              to: "examples",
+              to: "/core/examples",
             },
             {
               label: "Integrations",
-              to: "integrations",
+              to: "/core/integrations",
             },
             {
               label: "Become an Expert",
-              to: "become-a-refine-expert",
+              to: "/core/become-a-refine-expert",
             },
           ],
         },
@@ -344,7 +344,7 @@ const siteConfig = {
           items: [
             {
               label: "About",
-              to: "about",
+              to: "/core/about",
             },
           ],
         },
