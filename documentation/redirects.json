@@ -2003,7 +2003,7 @@
     },
     {
       "from": "/pricing",
-      "to": "/core/enterprise"
+      "to": "/"
     },
     {
       "from": "/blog/javascript-vs-ts/",
@@ -2209,6 +2209,22 @@
     {
       "from": "/advanced-tutorials/mutation-mode.md",
       "to": "/core/docs/advanced-tutorials/mutation-mode/"
+    },
+    {
+      "from": "/tutorial",
+      "to": "/core/tutorial/essentials/intro"
+    },
+    {
+      "from": "/ai",
+      "to": "/"
+    },
+    {
+      "from": "/enterprise",
+      "to": "/"
+    },
+    {
+      "from": "/licence",
+      "to": "/"
     }
   ]
 }
