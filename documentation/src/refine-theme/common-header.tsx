@@ -11,9 +11,9 @@ import { MobileMenuModal } from "./common-header/mobile-menu-modal";
 import { CommonThemeToggle } from "./common-theme-toggle";
 import { TopAnnouncement } from "./top-announcement";
 
-import { LandingGithubStarButton } from "./landing-github-star-button";
 import SearchBar from "../theme/SearchBar";
 import { RefineLogoXmas } from "./icons/refine-logo-xmas";
+import { LandingGithubStarButton } from "./landing-github-star-button";
 
 type Props = {
   hasSticky?: boolean;
@@ -81,7 +81,7 @@ export const CommonHeader = ({
             )}
           >
             <div className={clsx("w-[130px]", "landing-lg:w-[200px]")}>
-              <Link to="/" onContextMenu={openFigma}>
+              <Link to="/core" onContextMenu={openFigma}>
                 <RefineLogoXmas className="text-gray-900 dark:text-gray-0" />
               </Link>
             </div>

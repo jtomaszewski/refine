@@ -43,7 +43,7 @@ export const TutorialFooter = () => {
           )}
         >
           <Link
-            to="/"
+            to="/core"
             className={clsx(
               "hover:no-underline",
               "hover:text-refine-link-light",

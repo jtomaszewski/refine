@@ -2211,8 +2211,8 @@
       "to": "/core/docs/advanced-tutorials/mutation-mode/"
     },
     {
-      "from": "/tutorial",
-      "to": "/core/tutorial/essentials/intro"
+      "from": "/core/tutorial",
+      "to": "/core/tutorial/essentials/intro/"
     },
     {
       "from": "/ai",

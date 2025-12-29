@@ -1222,12 +1222,10 @@
 
 /docs/* /core/docs/:splat 301
 
-/tutorial/* /core/tutorial/:splat
+# /tutorial/* /core/tutorial/:splat
 
-/templates /core/templates/ 301
+# /templates /core/templates/ 301
 
-/templates/* /core/templates/:splat 301
+# /templates/* /core/templates/:splat 301
 
-/templates/* /core/templates/:splat 301
-
-/integrations /core/integrations/
+# /integrations /core/integrations/

@@ -20,7 +20,7 @@ export const DocRefineLogo = ({ className }: Props) => {
       )}
     >
       <Link
-        to="/"
+        to="/core"
         className={clsx("no-underline", "flex items-center gap-2")}
         onContextMenu={openFigma}
       >

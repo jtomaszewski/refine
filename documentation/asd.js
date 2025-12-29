@@ -20,14 +20,6 @@ const lines = redirects
   })
   .sort();
 
-lines.push(
-  "/docs/next/* /core/docs/:splat 301",
-  "/docs/* /core/docs/:splat 301",
-  "/tutorial/* /core/tutorial/:splat",
-  "/templates /core/templates/ 301",
-  "/templates/* /core/templates/:splat 301",
-  "/templates/* /core/templates/:splat 301",
-  "/integrations /core/integrations/",
-);
+lines.push();
 
 fs.writeFileSync("./static/_redirects", lines.join("\n\n"));
