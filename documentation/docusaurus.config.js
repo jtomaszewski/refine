@@ -44,17 +44,6 @@ const siteConfig = {
   favicon: "assets/favicon.svg",
   onBrokenLinks: "warn",
   scripts: ["https://platform.twitter.com/widgets.js"],
-  headTags: [
-    {
-      tagName: "script",
-      attributes: {},
-      innerHTML: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('config', 'G-PSTZ6M7LTY');
-      `,
-    },
-  ],
   presets: [
     [
       "@docusaurus/preset-classic",
@@ -118,7 +107,7 @@ const siteConfig = {
           ],
         },
         gtag: {
-          trackingID: "G-27Z1WY952H",
+          trackingID: ["G-27Z1WY952H", "G-PSTZ6M7LTY"],
         },
         sitemap: {
           ignorePatterns: ["**/_*.md"],
