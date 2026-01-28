@@ -10,29 +10,57 @@ import type {
   SortOrder,
 } from "../../contexts/data/types";
 
+export type CursorDirection = "after" | "before";
+
 export const parseTableParams = (url: string) => {
-  const { currentPage, pageSize, sorters, sorter, filters, cursor } = qs.parse(
-    url.substring(1), // remove first ? character
-  );
+  const { currentPage, pageSize, sorters, sorter, filters, after, before } =
+    qs.parse(
+      url.substring(1), // remove first ? character
+    );
+
+  let parsedCursor: unknown = undefined;
+  let parsedCursorDirection: CursorDirection = "after";
+
+  if (after) {
+    parsedCursor = after;
+    parsedCursorDirection = "after";
+  } else if (before) {
+    parsedCursor = before;
+    parsedCursorDirection = "before";
+  }
 
   return {
     parsedCurrentPage: currentPage && Number(currentPage),
     parsedPageSize: pageSize && Number(pageSize),
     parsedSorter: (sorters as CrudSort[]) || (sorter as CrudSort[]) || [],
     parsedFilters: (filters as CrudFilter[]) ?? [],
-    parsedCursor: cursor,
+    parsedCursor,
+    parsedCursorDirection,
   };
 };
 
 export const parseTableParamsFromQuery = (params: any) => {
-  const { currentPage, pageSize, sorters, sorter, filters, cursor } = params;
+  const { currentPage, pageSize, sorters, sorter, filters, after, before } =
+    params;
+
+  let parsedCursor: unknown = undefined;
+  let parsedCursorDirection: CursorDirection = "after";
+
+  if (after) {
+    parsedCursor = after;
+    parsedCursorDirection = "after";
+  } else if (before) {
+    parsedCursor = before;
+    parsedCursorDirection = "before";
+  }
 
   return {
     parsedCurrentPage: currentPage && Number(currentPage),
     parsedPageSize: pageSize && Number(pageSize),
     parsedSorter: (sorters as CrudSort[]) || (sorter as CrudSort[]) || [],
     parsedFilters: (filters as CrudFilter[]) ?? [],
-    parsedCursor: cursor,
+    parsedCursor,
+    parsedCursorDirection,
   };
 };
 
@@ -41,7 +69,7 @@ export const parseTableParamsFromQuery = (params: any) => {
  */
 export const stringifyTableParams = (params: {
   pagination?: { currentPage?: number; pageSize?: number };
-  cursor?: unknown;
+  cursor?: { current: unknown; direction: CursorDirection };
   sorters: CrudSort[];
   sorter?: CrudSort[];
   filters: CrudFilter[];
@@ -57,11 +85,15 @@ export const stringifyTableParams = (params: {
   // Prioritize sorters over sorter
   const finalSorters = sorters && sorters.length > 0 ? sorters : sorter;
 
+  // Build cursor params: ?after=X or ?before=X
+  const cursorParams =
+    cursor?.current !== undefined ? { [cursor.direction]: cursor.current } : {};
+
   const queryString = qs.stringify(
     {
       ...rest,
       ...(pagination ? pagination : {}),
-      ...(cursor !== undefined ? { cursor } : {}),
+      ...cursorParams,
       sorters: finalSorters,
       filters,
     },

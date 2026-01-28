@@ -14,6 +14,7 @@ import {
   setInitialSorters,
   unionFilters,
   unionSorters,
+  type CursorDirection,
 } from "@definitions/table";
 import {
   useGo,
@@ -227,8 +228,14 @@ export function useTable<
   const preferredMeta = meta;
 
   // Parse table params from URL if available
-  const { parsedCurrentPage, parsedPageSize, parsedSorter, parsedFilters } =
-    parseTableParams(parsedParams.params?.search ?? "?");
+  const {
+    parsedCurrentPage,
+    parsedPageSize,
+    parsedSorter,
+    parsedFilters,
+    parsedCursor,
+    parsedCursorDirection,
+  } = parseTableParams(parsedParams.params?.search ?? "?");
 
   const preferredInitialFilters = filtersFromProp?.initial;
   const preferredPermanentFilters =
@@ -245,10 +252,18 @@ export function useTable<
   let defaultSorter: CrudSort[] | undefined;
   let defaultFilter: CrudFilter[] | undefined;
   let defaultCursor: unknown = undefined;
+  let defaultCursorDirection: CursorDirection = "after";
 
   if (syncWithLocation) {
     if (isCursorPaginationEnabled) {
-      defaultCursor = parsedParams?.params?.cursor;
+      // Read cursor from parsed params (after/before from URL)
+      if (parsedParams?.params?.after) {
+        defaultCursor = parsedParams.params.after;
+        defaultCursorDirection = "after";
+      } else if (parsedParams?.params?.before) {
+        defaultCursor = parsedParams.params.before;
+        defaultCursorDirection = "before";
+      }
     }
     defaultCurrentPage =
       parsedParams?.params?.currentPage ||
@@ -302,11 +317,13 @@ export function useTable<
 
   const [cursorState, setCursorState] = useState<{
     current: unknown;
+    direction: CursorDirection;
     next: unknown;
     prev: unknown;
     history: unknown[];
   }>({
     current: defaultCursor,
+    direction: defaultCursorDirection,
     next: undefined,
     prev: undefined,
     history: [],
@@ -360,6 +377,13 @@ export function useTable<
       const shouldSyncPagination =
         isPaginationEnabled && !isCursorPaginationEnabled;
       const shouldSyncCursor = isPaginationEnabled && isCursorPaginationEnabled;
+
+      // Build cursor params: ?after=X or ?before=X
+      const cursorParams =
+        shouldSyncCursor && cursorState.current !== undefined
+          ? { [cursorState.direction]: cursorState.current }
+          : {};
+
       go({
         type: "replace",
         options: {
@@ -367,7 +391,7 @@ export function useTable<
         },
         query: {
           ...(shouldSyncPagination ? { pageSize, currentPage } : {}),
-          ...(shouldSyncCursor ? { cursor: cursorState.current } : {}),
+          ...cursorParams,
           sorters: differenceWith(sorters, preferredPermanentSorters, isEqual),
           filters: differenceWith(filters, preferredPermanentFilters, isEqual),
         },
@@ -381,12 +405,16 @@ export function useTable<
     filters,
     isCursorPaginationEnabled,
     cursorState.current,
+    cursorState.direction,
   ]);
 
   const cursorMeta = isCursorPaginationEnabled
     ? {
         ...combinedMeta,
-        cursor: { current: cursorState.current },
+        cursor: {
+          current: cursorState.current,
+          direction: cursorState.direction,
+        },
       }
     : combinedMeta;
 
@@ -483,6 +511,7 @@ export function useTable<
     if (cursorState.next) {
       setCursorState((prev) => ({
         current: prev.next,
+        direction: "after",
         history: [...prev.history, prev.current],
         next: undefined,
         prev: undefined,
@@ -500,6 +529,7 @@ export function useTable<
     if (cursorState.prev) {
       setCursorState((prev) => ({
         current: prev.prev,
+        direction: "before",
         next: undefined,
         prev: undefined,
         history: prev.history,
@@ -510,12 +540,27 @@ export function useTable<
       const prevCursor = newHistory.pop();
       setCursorState({
         current: prevCursor,
+        direction: "after",
         next: undefined,
         prev: undefined,
         history: newHistory,
       });
+    } else if (cursorState.current) {
+      // Go to first page by clearing cursor
+      setCursorState({
+        current: undefined,
+        direction: "after",
+        next: undefined,
+        prev: undefined,
+        history: [],
+      });
     }
-  }, [isCursorPaginationEnabled, cursorState.prev, cursorState.history]);
+  }, [
+    isCursorPaginationEnabled,
+    cursorState.prev,
+    cursorState.history,
+    cursorState.current,
+  ]);
 
   const pageCount = pageSize
     ? Math.ceil((queryResult.result?.total ?? 0) / pageSize)
@@ -525,8 +570,11 @@ export function useTable<
     ? !!cursorState.next
     : currentPage < pageCount;
 
+  // Can go to previous page if: has API prev cursor, has history, or has current cursor (can go to first page)
   const hasPreviousPage = isCursorPaginationEnabled
-    ? Boolean(cursorState.prev) || cursorState.history.length > 0
+    ? Boolean(cursorState.prev) ||
+      cursorState.history.length > 0 ||
+      Boolean(cursorState.current)
     : currentPage > 1;
 
   return {
