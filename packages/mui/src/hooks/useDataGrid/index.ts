@@ -14,7 +14,8 @@ import {
   type useTableReturnType as useTableReturnTypeCore,
   useResourceParams,
 } from "@refinedev/core";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Button } from "@mui/material";
 
 import type {
   DataGridProps,
@@ -59,6 +60,8 @@ type DataGridPropsType = Required<
     | "filterModel"
     | "filterDebounceMs"
     | "processRowUpdate"
+    | "slots"
+    | "hideFooterPagination"
   >;
 
 export type UseDataGridProps<
@@ -220,6 +223,7 @@ export function useDataGrid<
   const isServerSideSortingEnabled =
     (sortersFromProp?.mode || "server") === "server";
   const isPaginationEnabled = (pagination?.mode ?? "server") !== "off";
+  const isCursorPaginationEnabled = pagination?.mode === "cursor";
 
   const preferredPermanentSorters =
     sortersFromProp?.permanent ?? defaultPermanentSort;
@@ -352,6 +356,51 @@ export function useDataGrid<
     [sorters, preferredPermanentSorters],
   );
 
+  const CursorPaginationFooter = useMemo(() => {
+    if (!isCursorPaginationEnabled) return undefined;
+
+    return function CursorPaginationFooterComponent() {
+      return React.createElement(
+        Box,
+        {
+          sx: {
+            p: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 1,
+            borderTop: 1,
+            borderColor: "divider",
+          },
+        },
+        React.createElement(
+          Button,
+          {
+            size: "small",
+            onClick: goToPreviousPage,
+            disabled: !hasPreviousPage,
+          },
+          "Previous",
+        ),
+        React.createElement(
+          Button,
+          {
+            size: "small",
+            onClick: goToNextPage,
+            disabled: !hasNextPage,
+          },
+          "Next",
+        ),
+      );
+    };
+  }, [
+    isCursorPaginationEnabled,
+    goToPreviousPage,
+    goToNextPage,
+    hasPreviousPage,
+    hasNextPage,
+  ]);
+
   return {
     tableQuery,
     dataGridProps: {
@@ -384,6 +433,12 @@ export function useDataGrid<
         }
       },
       processRowUpdate: editable ? processRowUpdate : undefined,
+      ...(isCursorPaginationEnabled && {
+        hideFooterPagination: true,
+        slots: {
+          footer: CursorPaginationFooter,
+        },
+      }),
     },
     currentPage,
     setCurrentPage,

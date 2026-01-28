@@ -11,7 +11,7 @@ import type {
 } from "../../contexts/data/types";
 
 export const parseTableParams = (url: string) => {
-  const { currentPage, pageSize, sorters, sorter, filters } = qs.parse(
+  const { currentPage, pageSize, sorters, sorter, filters, cursor } = qs.parse(
     url.substring(1), // remove first ? character
   );
 
@@ -20,17 +20,19 @@ export const parseTableParams = (url: string) => {
     parsedPageSize: pageSize && Number(pageSize),
     parsedSorter: (sorters as CrudSort[]) || (sorter as CrudSort[]) || [],
     parsedFilters: (filters as CrudFilter[]) ?? [],
+    parsedCursor: cursor,
   };
 };
 
 export const parseTableParamsFromQuery = (params: any) => {
-  const { currentPage, pageSize, sorters, sorter, filters } = params;
+  const { currentPage, pageSize, sorters, sorter, filters, cursor } = params;
 
   return {
     parsedCurrentPage: currentPage && Number(currentPage),
     parsedPageSize: pageSize && Number(pageSize),
     parsedSorter: (sorters as CrudSort[]) || (sorter as CrudSort[]) || [],
     parsedFilters: (filters as CrudFilter[]) ?? [],
+    parsedCursor: cursor,
   };
 };
 
@@ -39,6 +41,7 @@ export const parseTableParamsFromQuery = (params: any) => {
  */
 export const stringifyTableParams = (params: {
   pagination?: { currentPage?: number; pageSize?: number };
+  cursor?: unknown;
   sorters: CrudSort[];
   sorter?: CrudSort[];
   filters: CrudFilter[];
@@ -49,7 +52,7 @@ export const stringifyTableParams = (params: {
     arrayFormat: "indices",
     encode: false,
   };
-  const { pagination, sorters, sorter, filters, ...rest } = params;
+  const { pagination, cursor, sorters, sorter, filters, ...rest } = params;
 
   // Prioritize sorters over sorter
   const finalSorters = sorters && sorters.length > 0 ? sorters : sorter;
@@ -58,6 +61,7 @@ export const stringifyTableParams = (params: {
     {
       ...rest,
       ...(pagination ? pagination : {}),
+      ...(cursor !== undefined ? { cursor } : {}),
       sorters: finalSorters,
       filters,
     },

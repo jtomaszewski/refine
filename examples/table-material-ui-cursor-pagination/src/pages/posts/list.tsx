@@ -2,22 +2,16 @@ import { List, useDataGrid } from "@refinedev/mui";
 import React from "react";
 
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { Box, Button, Stack } from "@mui/material";
 
 import type { ICommit } from "../../interfaces";
 
 export const PostList: React.FC = () => {
-  const {
-    dataGridProps,
-    hasNextPage,
-    hasPreviousPage,
-    goToNextPage,
-    goToPreviousPage,
-  } = useDataGrid<ICommit>({
+  const { dataGridProps } = useDataGrid<ICommit>({
     pagination: {
       mode: "cursor",
       pageSize: 5,
     },
+    syncWithLocation: true,
   });
 
   const columns: GridColDef<ICommit>[] = [
@@ -72,27 +66,8 @@ export const PostList: React.FC = () => {
       <DataGrid
         getRowId={(row) => row.sha}
         {...dataGridProps}
-        hideFooter
         columns={columns}
       />
-      <Box sx={{ mt: 2 }}>
-        <Stack direction="row" spacing={2} justifyContent="center">
-          <Button
-            variant="outlined"
-            onClick={goToPreviousPage}
-            disabled={!hasPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={goToNextPage}
-            disabled={!hasNextPage}
-          >
-            Next
-          </Button>
-        </Stack>
-      </Box>
     </List>
   );
 };

@@ -244,8 +244,12 @@ export function useTable<
   let defaultPageSize: number;
   let defaultSorter: CrudSort[] | undefined;
   let defaultFilter: CrudFilter[] | undefined;
+  let defaultCursor: unknown = undefined;
 
   if (syncWithLocation) {
+    if (isCursorPaginationEnabled) {
+      defaultCursor = parsedParams?.params?.cursor;
+    }
     defaultCurrentPage =
       parsedParams?.params?.currentPage ||
       parsedCurrentPage ||
@@ -287,13 +291,6 @@ export function useTable<
     );
   }, [identifier]);
 
-  React.useEffect(() => {
-    warnOnce(
-      syncWithLocation && isCursorPaginationEnabled,
-      "useTable: syncWithLocation is not supported with cursor pagination mode. URL sync will be disabled for pagination.",
-    );
-  }, [syncWithLocation, isCursorPaginationEnabled]);
-
   const [sorters, setSorters] = useState<CrudSort[]>(
     setInitialSorters(preferredPermanentSorters, defaultSorter ?? []),
   );
@@ -309,7 +306,7 @@ export function useTable<
     prev: unknown;
     history: unknown[];
   }>({
-    current: undefined,
+    current: defaultCursor,
     next: undefined,
     prev: undefined,
     history: [],
@@ -362,6 +359,7 @@ export function useTable<
     if (syncWithLocation) {
       const shouldSyncPagination =
         isPaginationEnabled && !isCursorPaginationEnabled;
+      const shouldSyncCursor = isPaginationEnabled && isCursorPaginationEnabled;
       go({
         type: "replace",
         options: {
@@ -369,6 +367,7 @@ export function useTable<
         },
         query: {
           ...(shouldSyncPagination ? { pageSize, currentPage } : {}),
+          ...(shouldSyncCursor ? { cursor: cursorState.current } : {}),
           sorters: differenceWith(sorters, preferredPermanentSorters, isEqual),
           filters: differenceWith(filters, preferredPermanentFilters, isEqual),
         },
@@ -381,6 +380,7 @@ export function useTable<
     sorters,
     filters,
     isCursorPaginationEnabled,
+    cursorState.current,
   ]);
 
   const cursorMeta = isCursorPaginationEnabled
@@ -496,7 +496,16 @@ export function useTable<
       return;
     }
 
-    if (cursorState.history.length > 0) {
+    // Prefer API's prev cursor (bidirectional APIs like Stripe, GraphQL)
+    if (cursorState.prev) {
+      setCursorState((prev) => ({
+        current: prev.prev,
+        next: undefined,
+        prev: undefined,
+        history: prev.history,
+      }));
+    } else if (cursorState.history.length > 0) {
+      // Fall back to client history (unidirectional APIs like GitHub)
       const newHistory = [...cursorState.history];
       const prevCursor = newHistory.pop();
       setCursorState({
@@ -506,7 +515,7 @@ export function useTable<
         history: newHistory,
       });
     }
-  }, [isCursorPaginationEnabled, cursorState.history]);
+  }, [isCursorPaginationEnabled, cursorState.prev, cursorState.history]);
 
   const pageCount = pageSize
     ? Math.ceil((queryResult.result?.total ?? 0) / pageSize)
@@ -517,7 +526,7 @@ export function useTable<
     : currentPage < pageCount;
 
   const hasPreviousPage = isCursorPaginationEnabled
-    ? cursorState.history.length > 0
+    ? Boolean(cursorState.prev) || cursorState.history.length > 0
     : currentPage > 1;
 
   return {

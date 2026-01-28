@@ -5,6 +5,8 @@ import {
   Form,
   type TablePaginationConfig,
   type TableProps,
+  Button,
+  Space,
 } from "antd";
 import { useForm as useFormSF } from "sunflower-antd";
 
@@ -94,6 +96,11 @@ export const useTable = <
     pageCount,
     overtime,
     result,
+    cursor,
+    hasNextPage,
+    hasPreviousPage,
+    goToNextPage,
+    goToPreviousPage,
   } = useTableCore<TQueryFnData, TError, TData>({
     pagination: paginationFromProp,
     filters: filtersFromProp,
@@ -119,6 +126,7 @@ export const useTable = <
   const liveMode = useLiveMode(liveModeFromProp);
 
   const isPaginationEnabled = paginationFromProp?.mode !== "off";
+  const isCursorPaginationEnabled = paginationFromProp?.mode === "cursor";
 
   const preferredInitialFilters = filtersFromProp?.initial;
 
@@ -190,55 +198,98 @@ export const useTable = <
   };
 
   const antdPagination = (): false | TablePaginationConfig => {
-    if (isPaginationEnabled) {
+    if (!isPaginationEnabled) {
+      return false;
+    }
+
+    if (isCursorPaginationEnabled) {
       return {
-        itemRender: (page, type, element) => {
-          const link = createLinkForSyncWithLocation({
-            pagination: {
-              pageSize,
-              currentPage: page,
-            },
-            sorters,
-            filters,
-          });
-
-          if (type === "page") {
-            return createElement(PaginationLink, {
-              to: link,
-              element: `${page}`,
-            });
-          }
-          if (type === "next" || type === "prev") {
-            return createElement(PaginationLink, {
-              to: link,
-              element: element,
-            });
-          }
-
-          if (type === "jump-next" || type === "jump-prev") {
-            const elementChildren = (element as React.ReactElement<any>)?.props
-              ?.children;
-
-            return createElement(PaginationLink, {
-              to: link,
-              element:
-                Children.count(elementChildren) > 1
-                  ? createElement(Fragment, {}, elementChildren)
-                  : elementChildren,
-            });
-          }
-
-          return element;
-        },
+        simple: true,
+        showSizeChanger: false,
+        showQuickJumper: false,
+        hideOnSinglePage: false,
+        total: 0,
         pageSize,
-        current: currentPage,
-        simple: !breakpoint.sm,
         position: !breakpoint.sm ? ["bottomCenter"] : ["bottomRight"],
-        total: data?.total,
+        itemRender: (_page, type, _element) => {
+          if (type === "prev") {
+            return createElement(
+              Button,
+              {
+                size: "small",
+                disabled: !hasPreviousPage,
+                onClick: (e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  goToPreviousPage();
+                },
+              },
+              "Previous",
+            );
+          }
+          if (type === "next") {
+            return createElement(
+              Button,
+              {
+                size: "small",
+                disabled: !hasNextPage,
+                onClick: (e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  goToNextPage();
+                },
+              },
+              "Next",
+            );
+          }
+          return null;
+        },
       };
     }
 
-    return false;
+    return {
+      itemRender: (page, type, element) => {
+        const link = createLinkForSyncWithLocation({
+          pagination: {
+            pageSize,
+            currentPage: page,
+          },
+          sorters,
+          filters,
+        });
+
+        if (type === "page") {
+          return createElement(PaginationLink, {
+            to: link,
+            element: `${page}`,
+          });
+        }
+        if (type === "next" || type === "prev") {
+          return createElement(PaginationLink, {
+            to: link,
+            element: element,
+          });
+        }
+
+        if (type === "jump-next" || type === "jump-prev") {
+          const elementChildren = (element as React.ReactElement<any>)?.props
+            ?.children;
+
+          return createElement(PaginationLink, {
+            to: link,
+            element:
+              Children.count(elementChildren) > 1
+                ? createElement(Fragment, {}, elementChildren)
+                : elementChildren,
+          });
+        }
+
+        return element;
+      },
+      pageSize,
+      current: currentPage,
+      simple: !breakpoint.sm,
+      position: !breakpoint.sm ? ["bottomCenter"] : ["bottomRight"],
+      total: data?.total,
+    };
   };
 
   return {
@@ -266,5 +317,10 @@ export const useTable = <
     createLinkForSyncWithLocation,
     overtime,
     result,
+    cursor,
+    hasNextPage,
+    hasPreviousPage,
+    goToNextPage,
+    goToPreviousPage,
   };
 };
