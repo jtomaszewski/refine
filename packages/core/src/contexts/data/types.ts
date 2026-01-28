@@ -169,6 +169,11 @@ export type MetaQuery = {
 } & QueryBuilderOptions &
   GraphQLQueryOptions;
 
+export interface CursorPagination {
+  next?: unknown;
+  prev?: unknown;
+}
+
 export interface Pagination {
   /**
    * Initial page index
@@ -184,7 +189,7 @@ export interface Pagination {
    * Whether to use server side pagination or not.
    * @default "server"
    */
-  mode?: "client" | "server" | "off";
+  mode?: "client" | "server" | "off" | "cursor";
 }
 
 export interface IQueryKeys {
