@@ -13,28 +13,21 @@ export const dataProvider = (
   getList: async ({ resource, meta, pagination }) => {
     let url = `${apiUrl}/${resource}?per_page=${pagination?.pageSize || 10}`;
 
-    if (meta?.cursor?.next) {
-      url = `${url}&until=${meta.cursor.next}`;
+    if (meta?.cursor?.current) {
+      url = `${url}&until=${meta.cursor.current}`;
     }
 
     const { data } = await httpClient.get(url);
 
+    const lastItem = data[data.length - 1];
+    const nextCursor = lastItem?.commit?.committer?.date;
+
     return {
       data,
-      total: 200, // Total count is not available in Github API
-
-      /**
-       * If the API supports it, you can define `cursor` this way.
-       *
-       * return {
-       *  data
-       *  total: 200,
-       *  cursor: {
-       *     next: data.meta.nextCursor,
-       *     prev: data.meta.prevCursor,
-       *  }
-       * }
-       */
+      total: 200,
+      cursor: {
+        next: nextCursor,
+      },
     };
   },
 

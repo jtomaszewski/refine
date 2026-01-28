@@ -2,24 +2,23 @@ import { List, useDataGrid } from "@refinedev/mui";
 import React from "react";
 
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { Box, Button, Stack } from "@mui/material";
 
 import type { ICommit } from "../../interfaces";
 
 export const PostList: React.FC = () => {
-  const [next, setNext] = React.useState<string | undefined>(undefined);
-  const { dataGridProps, tableQuery: tableQueryResult } = useDataGrid<ICommit>({
-    meta: {
-      cursor: {
-        next,
-      },
-    },
-
+  const {
+    dataGridProps,
+    hasNextPage,
+    hasPreviousPage,
+    goToNextPage,
+    goToPreviousPage,
+  } = useDataGrid<ICommit>({
     pagination: {
+      mode: "cursor",
       pageSize: 5,
     },
   });
-
-  const { data } = tableQueryResult;
 
   const columns: GridColDef<ICommit>[] = [
     {
@@ -73,16 +72,27 @@ export const PostList: React.FC = () => {
       <DataGrid
         getRowId={(row) => row.sha}
         {...dataGridProps}
-        onPaginationModelChange={(model, details) => {
-          const lastRow = data?.data[data.data.length - 1];
-          const next = lastRow?.commit.committer.date;
-          if (next) {
-            setNext(next);
-          }
-          dataGridProps.onPaginationModelChange?.(model, details);
-        }}
+        hideFooter
         columns={columns}
       />
+      <Box sx={{ mt: 2 }}>
+        <Stack direction="row" spacing={2} justifyContent="center">
+          <Button
+            variant="outlined"
+            onClick={goToPreviousPage}
+            disabled={!hasPreviousPage}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={goToNextPage}
+            disabled={!hasNextPage}
+          >
+            Next
+          </Button>
+        </Stack>
+      </Box>
     </List>
   );
 };
