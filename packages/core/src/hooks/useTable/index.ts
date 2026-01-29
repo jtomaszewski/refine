@@ -378,11 +378,16 @@ export function useTable<
         isPaginationEnabled && !isCursorPaginationEnabled;
       const shouldSyncCursor = isPaginationEnabled && isCursorPaginationEnabled;
 
-      // Build cursor params: ?after=X or ?before=X
-      const cursorParams =
-        shouldSyncCursor && cursorState.current !== undefined
-          ? { [cursorState.direction]: cursorState.current }
-          : {};
+      // Build cursor params: ?after=X or ?before=X (explicitly clear both when no cursor)
+      const cursorParams = shouldSyncCursor
+        ? cursorState.current !== undefined
+          ? {
+              after: undefined,
+              before: undefined,
+              [cursorState.direction]: cursorState.current,
+            }
+          : { after: undefined, before: undefined }
+        : {};
 
       go({
         type: "replace",
