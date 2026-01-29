@@ -1,4 +1,4 @@
-import React, { Children, createElement, Fragment } from "react";
+import React, { Children, createElement, Fragment, useMemo } from "react";
 import {
   Grid,
   type FormProps,
@@ -197,52 +197,49 @@ export const useTable = <
     }
   };
 
-  const antdPagination = (): false | TablePaginationConfig => {
-    if (!isPaginationEnabled) {
-      return false;
-    }
+  const cursorPaginationFooter = useMemo(() => {
+    if (!isCursorPaginationEnabled) return undefined;
 
-    if (isCursorPaginationEnabled) {
-      return {
-        simple: true,
-        showSizeChanger: false,
-        showQuickJumper: false,
-        hideOnSinglePage: false,
-        total: 0,
-        pageSize,
-        position: !breakpoint.sm ? ["bottomCenter"] : ["bottomRight"],
-        itemRender: (_page, type, _element) => {
-          if (type === "prev") {
-            return createElement(
-              Button,
-              {
-                size: "small",
-                disabled: !hasPreviousPage,
-                onClick: (e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  goToPreviousPage();
-                },
-              },
-              "Previous",
-            );
-          }
-          if (type === "next") {
-            return createElement(
-              Button,
-              {
-                size: "small",
-                disabled: !hasNextPage,
-                onClick: (e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  goToNextPage();
-                },
-              },
-              "Next",
-            );
-          }
-          return null;
+    return () =>
+      createElement(
+        Space,
+        {
+          style: {
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "16px",
+          },
         },
-      };
+        createElement(
+          Button,
+          {
+            size: "small",
+            disabled: !hasPreviousPage,
+            onClick: goToPreviousPage,
+          },
+          "Previous",
+        ),
+        createElement(
+          Button,
+          {
+            size: "small",
+            disabled: !hasNextPage,
+            onClick: goToNextPage,
+          },
+          "Next",
+        ),
+      );
+  }, [
+    isCursorPaginationEnabled,
+    hasPreviousPage,
+    hasNextPage,
+    goToPreviousPage,
+    goToNextPage,
+  ]);
+
+  const antdPagination = useMemo((): false | TablePaginationConfig => {
+    if (!isPaginationEnabled || isCursorPaginationEnabled) {
+      return false;
     }
 
     return {
@@ -290,7 +287,17 @@ export const useTable = <
       position: !breakpoint.sm ? ["bottomCenter"] : ["bottomRight"],
       total: data?.total,
     };
-  };
+  }, [
+    isPaginationEnabled,
+    isCursorPaginationEnabled,
+    pageSize,
+    breakpoint.sm,
+    createLinkForSyncWithLocation,
+    sorters,
+    filters,
+    currentPage,
+    data?.total,
+  ]);
 
   return {
     searchFormProps: {
@@ -301,8 +308,9 @@ export const useTable = <
       dataSource: data?.data,
       loading: liveMode === "auto" ? isLoading : !isFetched,
       onChange,
-      pagination: antdPagination(),
+      pagination: antdPagination,
       scroll: { x: true },
+      ...(cursorPaginationFooter && { footer: cursorPaginationFooter }),
     },
     tableQuery,
     sorters,
